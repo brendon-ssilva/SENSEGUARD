@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Gestão de Manutenção Industrial. Controle total das suas máquinas e operações."
+    />
+    <title>SenseGuard | Login</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="login-wrapper">
+      <aside class="presentation-panel">
+        <div class="background-grid"></div>
+        <div class="background-glow"></div>
+        <div class="background-orb" id="background_orb"></div>
+
+        <div class="brand-container" id="brand_container">
+          <div class="brand-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 2L3 7v10l9 5 9-5V7L12 2z"
+                stroke="white"
+                stroke-width="1.8"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M12 12l9-5M12 12v10M12 12L3 7"
+                stroke="white"
+                stroke-width="1.8"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+          <div class="brand-text-container">
+            <span class="brand-name">SenseGuard</span>
+            <span class="brand-version">Industrial v2.1</span>
+          </div>
+        </div>
+
+        <section class="hero-section" id="hero_section">
+          <div class="hero-content">
+            <span class="hero-eyebrow" id="hero_eyebrow"
+              >Gestão de Manutenção Industrial</span
+            >
+            <h1 class="hero-headline" id="hero_headline">
+              Controle total<br />das suas máquinas<br />e operações.
+            </h1>
+            <p class="hero-subline" id="hero_subline">
+              Monitore sensores em tempo real, gerencie ordens de serviço e
+              antecipe falhas antes que aconteçam.
+            </p>
+          </div>
+
+          <div class="features-container" id="features_container">
+            <div class="feature-item">
+              <div class="feature-icon">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                  <rect
+                    x="3"
+                    y="3"
+                    width="7"
+                    height="7"
+                    rx="1"
+                    stroke="#3b82f6"
+                    stroke-width="1.8"
+                  />
+                  <rect
+                    x="14"
+                    y="3"
+                    width="7"
+                    height="7"
+                    rx="1"
+                    stroke="#3b82f6"
+                    stroke-width="1.8"
+                  />
+                  <rect
+                    x="3"
+                    y="14"
+                    width="7"
+                    height="7"
+                    rx="1"
+                    stroke="#3b82f6"
+                    stroke-width="1.8"
+                  />
+                  <rect
+                    x="14"
+                    y="14"
+                    width="7"
+                    height="7"
+                    rx="1"
+                    stroke="#3b82f6"
+                    stroke-width="1.8"
+                  />
+                </svg>
+              </div>
+              <span class="feature-text">Dashboard em tempo real</span>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="3"
+                    stroke="#3b82f6"
+                    stroke-width="1.8"
+                  />
+                  <path
+                    d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"
+                    stroke="#3b82f6"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </div>
+              <span class="feature-text">Gestão de máquinas e sensores</span>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                    stroke="#3b82f6"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </div>
+              <span class="feature-text">Ordens de serviço integradas</span>
+            </div>
+          </div>
+
+          <div class="statistics-container" id="statistics_container">
+            <div class="statistic-item">
+              <span class="statistic-value" data-target="99.8" data-suffix="%"
+                >0%</span
+              >
+              <span class="statistic-label">Uptime</span>
+            </div>
+            <div class="statistic-item">
+              <span class="statistic-value" data-target="4" data-suffix="+"
+                >0+</span
+              >
+              <span class="statistic-label">Galpões</span>
+            </div>
+            <div class="statistic-item">
+              <span class="statistic-value" data-target="8" data-suffix=""
+                >0</span
+              >
+              <span class="statistic-label">Máquinas</span>
+            </div>
+          </div>
+        </section>
+
+        <div class="system-status-container" id="system_status_container">
+          <div class="system-status-indicator"></div>
+          <span class="system-status-text">Todos os sistemas operacionais</span>
+        </div>
+      </aside>
+
+      <main class="login-panel">
+        <div class="login-glow-background"></div>
+
+        <section class="login-card" id="login_card">
+          <div class="login-card-decorator"></div>
+          <div class="login-card-content">
+            <div class="mobile-brand-container" id="mobile_brand_container">
+              <div class="brand-icon mobile-brand-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M12 2L3 7v10l9 5 9-5V7L12 2z"
+                    stroke="white"
+                    stroke-width="1.8"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M12 12l9-5M12 12v10M12 12L3 7"
+                    stroke="white"
+                    stroke-width="1.8"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+              <div class="mobile-brand-text">
+                <div class="brand-name mobile-brand-title">MaintPro</div>
+                <div class="brand-version">Industrial v2.1</div>
+              </div>
+            </div>
+
+            <header class="login-form-heading">
+              <h2>Acesse sua conta</h2>
+              <p>Bem-vindo de volta</p>
+            </header>
+
+            <form id="login_form" class="login-form" action="login.php" method="POST" novalidate>
+              <div class="form-group">
+                <label for="email_input">E-mail</label>
+                <div class="input-wrapper">
+                  <span class="input-icon-container">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                      <rect
+                        x="2"
+                        y="4"
+                        width="20"
+                        height="16"
+                        rx="3"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                      />
+                      <path
+                        d="M2 8l10 7 10-7"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                      />
+                    </svg>
+                  </span>
+                  <input
+                    type="email"
+                    id="email_input"
+                    name="email"
+                    placeholder="usuario@empresa.com"
+                    autocomplete="email"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="form-group-header">
+                  <label for="password_input">Senha</label>
+                  <button type="button" class="forgot-password-button">
+                    Esqueceu a senha?
+                  </button>
+                </div>
+                <div class="input-wrapper">
+                  <span class="input-icon-container">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                      <rect
+                        x="5"
+                        y="10"
+                        width="14"
+                        height="11"
+                        rx="2"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                      />
+                      <path
+                        d="M8 10V7a4 4 0 018 0v3"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                  </span>
+                  <input
+                    type="password"
+                    id="password_input"
+                    name="password"
+                    placeholder="••••••••"
+                    autocomplete="current-password"
+                  />
+                  <button
+                    type="button"
+                    class="password-toggle-button"
+                    id="password_toggle_button"
+                    aria-label="Mostrar senha"
+                  >
+                    <svg
+                      id="eye_icon"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <path
+                        d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                      />
+                      <circle
+                        cx="12"
+                        cy="12"
+                        r="3"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="error-message-container" id="error_message_container">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  style="flex-shrink: 0"
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                  />
+                  <line
+                    x1="12"
+                    y1="8"
+                    x2="12"
+                    y2="12"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                  />
+                  <line
+                    x1="12"
+                    y1="16"
+                    x2="12.01"
+                    y2="16"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                <span class="error-text" id="error_text"></span>
+              </div>
+
+              <button type="submit" class="submit-button" id="submit_button">
+                <div class="submit-spinner"></div>
+                <span class="submit-label">Entrar</span>
+              </button>
+            </form>
+
+            <div class="divider-container">
+              <div class="divider-line"></div>
+              <span class="divider-label">ou</span>
+              <div class="divider-line"></div>
+            </div>
+
+            <div class="quick-access-container">
+              <p class="quick-access-label">Acesso rápido por perfil</p>
+              <div class="quick-access-roles">
+                <button
+                  class="role-button"
+                  data-color="blue"
+                  data-email="administrador@industria.com"
+                >
+                  Administrador
+                </button>
+                <button
+                  class="role-button"
+                  data-color="purple"
+                  data-email="supervisor@industria.com"
+                >
+                  Supervisor
+                </button>
+                <button
+                  class="role-button"
+                  data-color="green"
+                  data-email="tecnico@industria.com"
+                >
+                  Técnico
+                </button>
+              </div>
+            </div>
+          </div>
+          <footer class="login-card-footer">
+            <span>© 2026 MaintPro · Sistema de Gestão Industrial</span>
+          </footer>
+        </section>
+      </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
