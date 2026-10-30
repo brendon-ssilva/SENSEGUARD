@@ -1,0 +1,2 @@
+Usuário: admin.teste@senseguard.local
+Senha: SenseGuard@123
