@@ -1,0 +1,29 @@
+/* Tokens de design do painel (tema escuro padrão). O tema claro está em theme.css. */
+:root {
+  --bg: #0d1117;
+  --panel: #161b22;
+  --surface: #1c2128;
+  --border: #30363d;
+  --fg: #e6edf3;
+  --muted: #8b949e;
+
+  --blue: #58a6ff;
+  --emerald: #3fb950;
+  --amber: #d29922;
+  --crimson: #f85149;
+  --orange: #db6d28;
+  --violet: #a371f7;
+
+  --blue-dim: rgba(88, 166, 255, 0.12);
+  --emerald-dim: rgba(63, 185, 80, 0.12);
+  --amber-dim: rgba(210, 153, 34, 0.12);
+  --crimson-dim: rgba(248, 81, 73, 0.12);
+  --orange-dim: rgba(219, 109, 40, 0.12);
+  --violet-dim: rgba(163, 113, 247, 0.12);
+  --muted-dim: rgba(139, 148, 158, 0.1);
+
+  --blue-bdr: rgba(88, 166, 255, 0.28);
+  --amber-bdr: rgba(210, 153, 34, 0.28);
+  --crimson-bdr: rgba(248, 81, 73, 0.28);
+  --emerald-bdr: rgba(63, 185, 80, 0.28);
+}

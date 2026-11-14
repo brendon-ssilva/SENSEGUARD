@@ -1,0 +1,158 @@
+<?php
+
+declare(strict_types=1);
+
+require __DIR__ . '/../src/bootstrap.php';
+
+use SenseGuard\Core\App;
+use SenseGuard\Core\View;
+use SenseGuard\Http\Request;
+use SenseGuard\Http\SecurityHeaders;
+
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+
+try {
+    $app = App::boot();
+    SecurityHeaders::sendPage(Request::fromGlobals()->isHttps());
+    $currentUser = $app->authenticator()->currentUser();
+} catch (Throwable $e) {
+    error_log('SenseGuard dashboard: ' . $e::class . ': ' . $e->getMessage());
+    http_response_code(500);
+    header('Content-Type: text/plain; charset=utf-8');
+    exit('Não foi possível carregar o sistema no momento. Tente novamente mais tarde.');
+}
+
+if ($currentUser === null) {
+    header('Location: index.php');
+    exit;
+}
+
+$csrfToken = View::e($app->csrf()->token());
+?>
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta name="csrf-token" content="<?= $csrfToken ?>" />
+    <meta name="app-version" content="<?= View::e(App::VERSION) ?>" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SenseGuard | Dashboard Industrial</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="<?= View::asset('assets/css/tokens.css') ?>" />
+    <link rel="stylesheet" href="<?= View::asset('assets/css/base.css') ?>" />
+    <link rel="stylesheet" href="<?= View::asset('assets/css/layout.css') ?>" />
+    <link rel="stylesheet" href="<?= View::asset('assets/css/components.css') ?>" />
+    <link rel="stylesheet" href="<?= View::asset('assets/css/dashboard-view.css') ?>" />
+    <link rel="stylesheet" href="<?= View::asset('assets/css/machines.css') ?>" />
+    <link rel="stylesheet" href="<?= View::asset('assets/css/data-tables.css') ?>" />
+    <link rel="stylesheet" href="<?= View::asset('assets/css/modal.css') ?>" />
+    <link rel="stylesheet" href="<?= View::asset('assets/css/forms.css') ?>" />
+    <link rel="stylesheet" href="<?= View::asset('assets/css/utilities.css') ?>" />
+    <link rel="stylesheet" href="<?= View::asset('assets/css/responsive.css') ?>" />
+    <link rel="stylesheet" href="<?= View::asset('assets/css/settings.css') ?>" />
+    <link rel="stylesheet" href="<?= View::asset('assets/css/theme.css') ?>" />
+    <script src="<?= View::asset('assets/js/theme-init.js') ?>"></script>
+  </head>
+  <body>
+    <div id="application_wrapper" class="app-wrapper">
+      <aside id="sidebar_container" class="sidebar-container">
+        <header class="brand-header">
+          <div class="brand-icon">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#fff"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+          </div>
+          <div class="brand-text-container">
+            <span class="brand-name">SenseGuard</span>
+            <span class="brand-version">Industrial v<?= View::e(App::VERSION) ?></span>
+          </div>
+        </header>
+
+        <nav id="navigation_menu" class="navigation-menu"></nav>
+
+        <div class="sidebar-footer">
+          <button type="button" class="nav-button w-full" id="settings_nav_button" data-action="nav.go" data-view="settings">
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"
+              />
+            </svg>
+            Configurações
+          </button>
+        </div>
+
+        <div class="user-profile-badge">
+          <div
+            class="user-avatar"
+          >
+            CM
+          </div>
+          <div class="user-details">
+            <span class="user-name">Usuário</span>
+            <span class="user-role">Carregando perfil...</span>
+          </div>
+          <button type="button" class="profile-logout-button" id="profile_logout_button" data-action="session.logout" aria-label="Sair da conta" title="Sair da conta">
+            <span aria-hidden="true">↪</span> Sair
+          </button>
+        </div>
+      </aside>
+
+      <div id="main_content_area" class="main-content-area">
+        <header id="topbar_header" class="topbar-header"></header>
+        <main id="view_container" class="view-container"></main>
+      </div>
+    </div>
+
+    <div id="modal_overlay" class="modal-overlay">
+      <section id="modal_panel" class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal_title">
+        <header id="modal_header" class="modal-header">
+          <h3 id="modal_title" class="modal-title"></h3>
+          <button class="modal-close-button" data-action="modal.close" aria-label="Fechar">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </header>
+        <div id="modal_body" class="modal-body"></div>
+        <footer id="modal_footer" class="modal-footer"></footer>
+      </section>
+    </div>
+
+    <div id="toast_region" class="toast-region" aria-live="polite"></div>
+    <script type="module" src="<?= View::asset('assets/js/main.js') ?>"></script>
+  </body>
+</html>

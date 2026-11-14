@@ -1,0 +1,56 @@
+/* Tema claro (manual ou seguindo o sistema). */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f3f5f8;
+  --panel: #ffffff;
+  --surface: #f7f9fc;
+  --border: #d9e0e8;
+  --fg: #182230;
+  --muted: #627084;
+  --blue: #2563eb;
+  --emerald: #15803d;
+  --amber: #a16207;
+  --crimson: #dc2626;
+  --orange: #c2410c;
+  --violet: #7c3aed;
+  --blue-dim: rgba(37,99,235,.10);
+  --emerald-dim: rgba(21,128,61,.10);
+  --amber-dim: rgba(161,98,7,.10);
+  --crimson-dim: rgba(220,38,38,.10);
+  --orange-dim: rgba(194,65,12,.10);
+  --violet-dim: rgba(124,58,237,.10);
+  --muted-dim: rgba(98,112,132,.10);
+  --blue-bdr: rgba(37,99,235,.25);
+  --amber-bdr: rgba(161,98,7,.25);
+  --crimson-bdr: rgba(220,38,38,.25);
+  --emerald-bdr: rgba(21,128,61,.25);
+}
+
+@media (prefers-color-scheme: light) {
+  :root[data-theme="system"] {
+    color-scheme: light;
+    --bg: #f3f5f8;
+    --panel: #ffffff;
+    --surface: #f7f9fc;
+    --border: #d9e0e8;
+    --fg: #182230;
+    --muted: #627084;
+    --blue: #2563eb;
+    --emerald: #15803d;
+    --amber: #a16207;
+    --crimson: #dc2626;
+    --orange: #c2410c;
+    --violet: #7c3aed;
+    --blue-dim: rgba(37,99,235,.10);
+    --emerald-dim: rgba(21,128,61,.10);
+    --amber-dim: rgba(161,98,7,.10);
+    --crimson-dim: rgba(220,38,38,.10);
+    --orange-dim: rgba(194,65,12,.10);
+    --violet-dim: rgba(124,58,237,.10);
+    --muted-dim: rgba(98,112,132,.10);
+    --blue-bdr: rgba(37,99,235,.25);
+    --amber-bdr: rgba(161,98,7,.25);
+    --crimson-bdr: rgba(220,38,38,.25);
+    --emerald-bdr: rgba(21,128,61,.25);
+  }
+}

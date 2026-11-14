@@ -1,0 +1,111 @@
+/* Views Sensores, Ordens e Usuários: barras de leitura, linhas expansíveis e ações. */
+.reading-progress-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 144px;
+}
+
+.reading-progress-track {
+  flex: 1;
+  height: 6px;
+  background: var(--surface);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.reading-progress-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.3s;
+}
+
+.reading-progress-value {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.expanded-details-row td {
+  padding: 12px 20px 16px;
+  background: rgba(28, 33, 40, 0.3);
+}
+
+.expanded-details-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 16px;
+  font-size: 11px;
+}
+
+.expanded-section-label {
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.expanded-key-value-pair {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.icon-action-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+  color: var(--muted);
+  transition: color 0.15s;
+  display: flex;
+}
+.icon-action-button:hover.edit {
+  color: var(--blue);
+}
+.icon-action-button:hover.delete {
+  color: var(--crimson);
+}
+
+.table-expand-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--muted);
+  transition:
+    color 0.15s,
+    transform 0.2s;
+  display: flex;
+}
+.table-expand-button:hover {
+  color: var(--fg);
+}
+.table-expand-button.open {
+  transform: rotate(180deg);
+}
+
+
+/* ── Sensores, ordens e usuários ── */
+.reading-progress-fill.tone-emerald { background: var(--emerald); }
+.reading-progress-fill.tone-amber { background: var(--amber); }
+.reading-progress-fill.tone-crimson { background: var(--crimson); }
+.sensor-name { font-weight: 500; color: var(--fg); }
+.table-expand-cell { width: 32px; }
+.expanded-text { color: var(--fg); line-height: 1.6; }
+.expanded-value { color: var(--fg); }
+.expanded-value.done { color: var(--emerald); }
+.user-name-cell { font-size: 12px; font-weight: 500; color: var(--fg); }
+.user-avatar.tone-violet { background: var(--violet-dim); color: var(--violet); }
+.user-avatar.tone-blue { background: var(--blue-dim); color: var(--blue); }
+.user-avatar.tone-emerald { background: var(--emerald-dim); color: var(--emerald); }
+.user-avatar.tone-amber { background: var(--amber-dim); color: var(--amber); }
+.os-code { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--muted); }
+.audit-changes {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  color: var(--muted);
+  max-width: 380px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
