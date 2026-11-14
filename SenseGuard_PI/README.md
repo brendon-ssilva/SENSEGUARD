@@ -106,3 +106,32 @@ npm run lint                            # ESLint (opcional: npm install)
 - **Página sem estilo/JS** → acesse por `.../SENSEGUARD/public/` (ou configure o DocumentRoot para `public/`).
 
 Histórico detalhado das mudanças da versão 3.0 e como migrar: [`docs/MUDANCAS.md`](docs/MUDANCAS.md).
+
+
+## Trabalho acadêmico — AJAX, Fetch e JSON
+
+O SenseGuard foi utilizado para implementar e testar os
+requisitos da atividade de Programação para Web I.
+
+As evidências dos testes realizados estão disponíveis em:
+[Validação de AJAX, Fetch e JSON](docs/VALIDACAO_AJAX_FETCH_JSON.md).
+
+### Uso de inteligência artificial
+
+Durante o desenvolvimento, foi utilizado o ChatGPT como
+ferramenta de apoio para:
+
+- Análise e organização do projeto;
+- Planejamento das alterações;
+- Revisão e explicação de código;
+- Apoio à implementação de AJAX, Fetch e JSON;
+- Orientação sobre Git, GitHub e versionamento;
+- Preparação da documentação técnica.
+
+As alterações implementadas foram verificadas por meio
+de testes locais, utilizando VS Code, XAMPP, navegador
+e ferramentas de desenvolvimento.
+
+O uso da ferramenta não substitui a responsabilidade
+dos integrantes de revisar, compreender e apresentar
+o código desenvolvido.
