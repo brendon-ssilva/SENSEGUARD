@@ -6,7 +6,7 @@ import { I } from "../ui/icons.js";
 import { emptyState } from "../ui/components.js";
 import { openModal, closeModal, markInvalidField } from "../ui/modal.js";
 import { toastError } from "../ui/toast.js";
-import { saveEntity, deleteEntity, searchMachines } from "../api.js";
+import { saveEntity, deleteEntity, searchMachines, getMachineById } from "../api.js";
 import { refreshAllData } from "../data.js";
 import { renderView, renderChrome } from "../view-host.js";
 import { MACHINE_STATUS, SENSOR_STATUS, SENSOR_TYPE_LABELS } from "../constants.js";
@@ -90,6 +90,13 @@ function machineCard(machine) {
       ${maint.days !== null ? `<div class="maintenance-status-sub">${h(maint.text)}</div>` : ""}
     </div>
     ${actions}
+    <div class="machine-card-actions">
+      <button class="action-button-outline"
+        data-action="machines.openDetails"
+        data-id="${h(machine.id)}">
+        Detalhes
+      </button>
+    </div>
   </div>`;
 }
 
@@ -104,9 +111,9 @@ export function renderMachines() {
     ? '<div class="panel-card panel-card-padded" role="status">Buscando máquinas...</div>'
     : machineQuery.trim() && searchError
       ? `<div class="panel-card panel-card-padded" role="alert">${h(searchError)}</div>`
-      : filtered.length
-        ? `<div class="machine-cards-grid">${filtered.map(machineCard).join("")}</div>`
-        : emptyState(I.cpu, "Nenhuma máquina encontrada");
+    : filtered.length
+      ? `<div class="machine-cards-grid">${filtered.map(machineCard).join("")}</div>`
+    : emptyState(I.cpu, "Nenhuma máquina encontrada");
 
   return `<div class="view-wrapper">
     <div class="section-page-header">
@@ -206,7 +213,61 @@ async function confirmDelete({ id }) {
   renderChrome();
 }
 
+async function showMachineDetails({ id }) {
+  const context = `machine-details:${id}`;
+
+  openModal(
+    "Detalhes da Máquina",
+    '<div class="text-muted" role="status">Carregando detalhes...</div>',
+    '<button class="button-cancel" data-action="modal.close">Fechar</button>',
+    true,
+  );
+
+  state.modalContext = context;
+
+  try {
+    const machine = await getMachineById(id);
+
+    // Não modifica outro modal caso o usuário tenha fechado este.
+    if (state.modalContext !== context) return;
+
+    const fields = [
+      ["ID", machine.id],
+      ["Nome", machine.name],
+      ["Número de série", machine.serialNumber],
+      ["Modelo", machine.model],
+      ["Fabricante", machine.manufacturer],
+      ["Localização", machine.location],
+      ["Departamento", machine.department],
+      ["Status", MACHINE_STATUS[machine.status]?.label || machine.status],
+      ["Data de instalação", machine.installDate],
+      ["Última manutenção", machine.lastMaintenance],
+      ["Próxima manutenção", machine.nextMaintenance],
+      ["Sensores vinculados", Array.isArray(machine.sensorIds) ? machine.sensorIds.length : 0],
+    ];
+
+    const html = fields.map(([label, value]) => `
+      <div class="form-field-group">
+        <div class="form-input-label">${h(label)}</div>
+        <div class="details-value">${h(value === "" || value == null ? "—" : value)}</div>
+      </div>
+    `).join("");
+
+    const body = document.getElementById("modal_body");
+    if (body) body.innerHTML = `<div class="form-grid-layout">${html}</div>`;
+  } catch (error) {
+    if (state.modalContext !== context) return;
+
+    const body = document.getElementById("modal_body");
+    if (body) {
+      body.setAttribute("role", "alert");
+      body.textContent = error?.message || "Não foi possível carregar os detalhes.";
+    }
+  }
+}
+
 export const machineActions = {
+  "machines.openDetails": showMachineDetails,
   "machines.setFilter"({ value: filter }) {
     state.machineFilter = filter;
     renderView();

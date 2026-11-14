@@ -96,3 +96,28 @@ export async function searchMachines(query) {
 
   return machines;
 }
+
+/**
+ * Consulta os detalhes de uma máquina pelo ID.
+ */
+export async function getMachineById(id) {
+  const machineId = String(id ?? "").trim();
+
+  if (!/^[1-9]\d*$/.test(machineId)) {
+    throw new ApiError("Identificador da máquina inválido.");
+  }
+
+  const url = `api.php?entity=machines&id=${encodeURIComponent(machineId)}`;
+  const machine = await fetchJson(url);
+
+  if (
+    !machine ||
+    typeof machine !== "object" ||
+    Array.isArray(machine) ||
+    String(machine.id) !== machineId
+  ) {
+    throw new ApiError("A API retornou dados inválidos da máquina.");
+  }
+
+  return machine;
+}
