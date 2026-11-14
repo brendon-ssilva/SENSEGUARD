@@ -80,3 +80,19 @@ export function saveEntity(entity, id, payload) {
 export function deleteEntity(entity, id) {
   return apiFetch(`api.php?entity=${entity}&id=${encodeURIComponent(id)}`, { method: "DELETE" });
 }
+
+/**
+ * Pesquisa máquinas no MySQL utilizando GET e JSON.
+ */
+export async function searchMachines(query) {
+  const text = String(query ?? "").trim();
+  const url = `api.php?entity=machines&q=${encodeURIComponent(text)}`;
+
+  const machines = await fetchJson(url);
+
+  if (!Array.isArray(machines)) {
+    throw new ApiError("A API retornou uma lista de máquinas inválida.");
+  }
+
+  return machines;
+}

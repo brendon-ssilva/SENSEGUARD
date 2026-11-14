@@ -6,7 +6,7 @@ import { I } from "../ui/icons.js";
 import { emptyState } from "../ui/components.js";
 import { openModal, closeModal, markInvalidField } from "../ui/modal.js";
 import { toastError } from "../ui/toast.js";
-import { saveEntity, deleteEntity } from "../api.js";
+import { saveEntity, deleteEntity, searchMachines } from "../api.js";
 import { refreshAllData } from "../data.js";
 import { renderView, renderChrome } from "../view-host.js";
 import { MACHINE_STATUS, SENSOR_STATUS, SENSOR_TYPE_LABELS } from "../constants.js";
@@ -18,6 +18,21 @@ const FILTERS = [
   ["manutencao", "Manutenção"],
   ["inativo", "Inativo"],
 ];
+
+let searchTimer = null;
+let searchVersion = 0;
+let searchResults = null;
+let searchLoading = false;
+let searchError = "";
+
+function resetMachineSearch() {
+  clearTimeout(searchTimer);
+  searchVersion += 1;
+  searchResults = null;
+  searchLoading = false;
+  searchError = "";
+  state.machineQuery = "";
+}
 
 function matches(machine, query) {
   const q = query.toLowerCase();
@@ -80,7 +95,18 @@ function machineCard(machine) {
 
 export function renderMachines() {
   const { machines, machineFilter, machineQuery } = state;
-  const filtered = machines.filter((m) => matches(m, machineQuery) && (machineFilter === "all" || m.status === machineFilter));
+  const source = machineQuery.trim() ? (searchResults ?? []) : machines;
+  const filtered = source.filter(
+    (m) => machineFilter === "all" || m.status === machineFilter,
+  );
+
+  const content = machineQuery.trim() && searchLoading
+    ? '<div class="panel-card panel-card-padded" role="status">Buscando máquinas...</div>'
+    : machineQuery.trim() && searchError
+      ? `<div class="panel-card panel-card-padded" role="alert">${h(searchError)}</div>`
+      : filtered.length
+        ? `<div class="machine-cards-grid">${filtered.map(machineCard).join("")}</div>`
+        : emptyState(I.cpu, "Nenhuma máquina encontrada");
 
   return `<div class="view-wrapper">
     <div class="section-page-header">
@@ -91,7 +117,7 @@ export function renderMachines() {
       <div class="search-input-wrapper">${I.search}<input class="search-input-field" data-input="machines.setQuery" placeholder="Buscar por nome, setor, local ou nº de série..." value="${h(machineQuery)}"></div>
       <div class="filter-buttons-group">${FILTERS.map(([value, label]) => `<button class="filter-button${machineFilter === value ? " active" : ""}" data-action="machines.setFilter" data-value="${value}">${h(label)}</button>`).join("")}</div>
     </div>
-    ${filtered.length ? `<div class="machine-cards-grid">${filtered.map(machineCard).join("")}</div>` : emptyState(I.cpu, "Nenhuma máquina encontrada")}
+    ${content}
   </div>`;
 }
 
@@ -166,6 +192,7 @@ async function save() {
   }
 
   await closeModal();
+  resetMachineSearch();
   await refreshAllData();
 }
 
@@ -174,6 +201,7 @@ async function confirmDelete({ id }) {
   state.machines = state.machines.filter((m) => m.id !== id);
   state.sensors = state.sensors.map((s) => (s.machineId === id ? { ...s, machineId: null } : s));
   state.deleteId = null;
+  resetMachineSearch();
   renderView();
   renderChrome();
 }
@@ -197,9 +225,44 @@ export const machineActions = {
   "machines.confirmDelete": confirmDelete,
 };
 
+
 export const machineInputs = {
   "machines.setQuery"({ value: query }) {
-    state.machineQuery = query;
+    const text = String(query ?? "");
+
+    state.machineQuery = text;
+
+    clearTimeout(searchTimer);
+    const version = ++searchVersion;
+
+    searchResults = null;
+    searchError = "";
+    searchLoading = Boolean(text.trim());
+
     renderView();
+
+    if (!text.trim()) return;
+
+    searchTimer = setTimeout(async () => {
+      try {
+        const results = await searchMachines(text);
+
+        // Ignora respostas de pesquisas antigas.
+        if (version !== searchVersion) return;
+
+        searchResults = results;
+      } catch (error) {
+        if (version !== searchVersion) return;
+
+        searchError = error instanceof Error
+          ? error.message
+          : "Não foi possível realizar a pesquisa.";
+      } finally {
+        if (version === searchVersion) {
+          searchLoading = false;
+          renderView();
+        }
+      }
+    }, 300);
   },
 };

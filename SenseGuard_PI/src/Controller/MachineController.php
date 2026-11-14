@@ -34,6 +34,40 @@ final class MachineController extends ResourceController
         );
     }
 
+
+    /**
+     * Lista todas as máquinas ou pesquisa pelo parâmetro GET ?q=.
+     */
+    public function index(Request $request): Response
+    {
+        $query = trim($request->query('q') ?? '');
+
+        // Preserva o comportamento atual quando não há pesquisa.
+        if ($query === '') {
+            return parent::index($request);
+        }
+
+        if (strlen($query) > 200) {
+            throw new ApiException(400, 'Termo de busca muito longo.', 'q');
+        }
+
+        $limit = $request->queryInt('limit', 1, 1000);
+        $offset = $request->queryInt('offset', 0, 1000000) ?? 0;
+
+        $sensorIds = $this->machines->sensorIdsGrouped();
+
+        $results = array_map(
+            fn (array $row): array => $this->present(
+                $row,
+                $sensorIds[(int) $row['id_maquina']] ?? []
+            ),
+            $this->machines->search($query, $limit, $offset)
+        );
+
+        return Response::json($results);
+    }
+
+
     public function show(Request $request, int $id): Response
     {
         $row = $this->machines->findOrFail($id);

@@ -24,6 +24,40 @@ final class MachineRepository extends TenantRepository
             . 'data_instalacao, ultima_manutencao, proxima_manutencao, id_corporacao';
     }
 
+
+    /**
+     * Pesquisa máquinas da corporação pelo texto informado.
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function search(string $text, ?int $limit = null, int $offset = 0): array
+    {
+    $sql = 'SELECT ' . $this->columns()
+        . ' FROM maquina WHERE id_corporacao = ?'
+        . " AND (LOCATE(LOWER(?), LOWER(COALESCE(nome, ''))) > 0"
+        . " OR LOCATE(LOWER(?), LOWER(COALESCE(num_serial, ''))) > 0"
+        . " OR LOCATE(LOWER(?), LOWER(COALESCE(localizacao, ''))) > 0"
+        . " OR LOCATE(LOWER(?), LOWER(COALESCE(departamento, ''))) > 0)"
+        . ' ORDER BY id_maquina DESC';
+
+    if ($limit !== null) {
+        $sql .= ' LIMIT ' . max(1, $limit)
+            . ' OFFSET ' . max(0, $offset);
+    }
+
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute([
+        $this->corporationId,
+        $text,
+        $text,
+        $text,
+        $text,
+    ]);
+
+    return $stmt->fetchAll();
+    }
+
+
     /**
      * Ids dos sensores de todas as máquinas em uma única consulta (evita N+1).
      *
