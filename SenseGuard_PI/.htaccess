@@ -1,0 +1,13 @@
+# Raiz do PROJETO (não é a raiz pública). O ideal é apontar o servidor para a pasta public/.
+# No XAMPP (projeto dentro de htdocs) estas regras impedem o download de arquivos sensíveis.
+Options -Indexes
+
+<FilesMatch "\.(sql|md|json|lock|dist|neon|mjs|yml|yaml|example|bak|log)$|^\.">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>

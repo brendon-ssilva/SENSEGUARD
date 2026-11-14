@@ -1,0 +1,4 @@
+# Módulos ES importam uns aos outros sem ?v=, então o navegador deve revalidar (ETag/304) a cada carga.
+<IfModule mod_headers.c>
+  Header set Cache-Control "no-cache"
+</IfModule>

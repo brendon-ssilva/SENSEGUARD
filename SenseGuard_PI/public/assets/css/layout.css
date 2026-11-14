@@ -1,0 +1,267 @@
+/* Estrutura do painel: sidebar, navegação, topbar e contêiner das views. */
+.app-wrapper {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar-container {
+  width: 224px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+}
+
+.brand-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.brand-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.brand-name {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  display: block;
+}
+
+.brand-version {
+  font-size: 10px;
+  color: var(--muted);
+  font-family: "JetBrains Mono", monospace;
+  margin-top: 2px;
+  display: block;
+}
+
+.navigation-menu {
+  flex: 1;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background 0.15s,
+    color 0.15s;
+  font-family: "DM Sans", system-ui, sans-serif;
+}
+
+.nav-button:hover {
+  background: var(--surface);
+  color: var(--fg);
+}
+
+.nav-button.active {
+  background: var(--blue-dim);
+  color: var(--blue);
+}
+
+.nav-button svg {
+  flex-shrink: 0;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.nav-badge {
+  margin-left: auto;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.nav-badge.amber {
+  background: var(--amber-dim);
+  color: var(--amber);
+}
+
+.nav-badge.crimson {
+  background: var(--crimson-dim);
+  color: var(--crimson);
+}
+
+.sidebar-footer {
+  border-top: 1px solid var(--border);
+  padding: 10px;
+}
+
+.user-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+}
+
+.user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: "JetBrains Mono", monospace;
+  flex-shrink: 0;
+}
+
+.user-name {
+  font-size: 11px;
+  font-weight: 600;
+  display: block;
+}
+
+.user-role {
+  font-size: 10px;
+  color: var(--muted);
+  display: block;
+}
+
+.main-content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.topbar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 24px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.breadcrumb-trail {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.breadcrumb-trail span.current {
+  color: var(--fg);
+  font-weight: 500;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.alert-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  border: 1px solid;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  background: transparent;
+}
+
+.alert-chip:hover {
+  opacity: 0.8;
+}
+
+.alert-chip.amber {
+  color: var(--amber);
+  border-color: var(--amber-bdr);
+  background: var(--amber-dim);
+}
+
+.alert-chip.crimson {
+  color: var(--crimson);
+  border-color: var(--crimson-bdr);
+  background: var(--crimson-dim);
+}
+
+.date-display {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: "JetBrains Mono", monospace;
+}
+
+.view-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.view-wrapper {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #484f58;
+}
+
+
+/* ── Perfil e botão de sair (antes em <style> dentro do dashboard.php) ── */
+.profile-logout-button {
+  margin-left: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 10px;
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.profile-logout-button:hover { background: var(--surface); }
+.profile-logout-button:disabled { opacity: 0.65; cursor: wait; }
+.user-profile-badge .user-avatar { background: var(--violet-dim); color: var(--violet); }

@@ -1,0 +1,14 @@
+{
+  "name": "senseguard-pi-frontend-tools",
+  "private": true,
+  "type": "module",
+  "description": "Ferramentas de desenvolvimento do front-end (o sistema em si não precisa de Node).",
+  "scripts": {
+    "test": "node --test tests/js/*.test.mjs",
+    "lint": "eslint public/assets/js"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "globals": "^15.0.0"
+  }
+}
