@@ -27,6 +27,8 @@ alterações no banco principal.
 | Cadastro de máquina | POST ?entity=machines | HTTP 201; JSON com ID |
 | Persistência | Recarregamento e nova busca | Registro mantido no MySQL |
 | Exclusão | DELETE pelo painel e GET de conferência | Registro excluído; consulta retornou [] |
+| Falha de conexão | GET com navegador em modo Offline | Mensagem de erro apresentada sem recarregar a página |
+| Recuperação da conexão | GET após restaurar a rede | Pesquisa voltou a funcionar normalmente |
 
 ## 4. Comportamento da interface
 
@@ -36,6 +38,9 @@ alterações no banco principal.
 - O botão Detalhes consulta a API pelo ID.
 - A edição de máquina continua funcionando.
 - A listagem é atualizada após salvar ou excluir.
+- Em caso de falha de conexão, a busca apresenta uma mensagem de erro.
+- Após restaurar a conexão, a pesquisa pode ser realizada novamente sem recarregar a página.
+
 
 ## 5. Segurança e tratamento de dados
 
