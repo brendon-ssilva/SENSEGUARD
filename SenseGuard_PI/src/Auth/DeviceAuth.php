@@ -39,14 +39,18 @@ final class DeviceAuth
         );
 
         $token = $request->header('X-Device-Token');
+        $authorization = $request->header('Authorization');
+        // Do not silently choose between conflicting authentication schemes.
+        if ($token !== null && $authorization !== null) {
+            throw $invalid();
+        }
         if ($token === null) {
-            $authorization = $request->header('Authorization');
             if ($authorization !== null && stripos($authorization, 'Bearer ') === 0) {
                 $token = trim(substr($authorization, 7));
             }
         }
 
-        if ($token === null || strlen($token) < 32 || strlen($token) > 128) {
+        if ($token === null || strlen($token) < 32 || strlen($token) > 128 || preg_match('/[\x00-\x20\x7f]/', $token) === 1) {
             throw $invalid();
         }
 

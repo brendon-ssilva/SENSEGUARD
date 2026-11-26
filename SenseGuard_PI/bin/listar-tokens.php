@@ -16,31 +16,33 @@ if (PHP_SAPI !== 'cli') {
 require dirname(__DIR__) . '/src/bootstrap.php';
 
 use SenseGuard\Core\App;
+use SenseGuard\Auth\TokenCliOptions;
 
-$options = [];
-foreach (array_slice($argv, 1) as $argument) {
-    if (preg_match('/^--([a-z-]+)=(.*)$/s', $argument, $match) === 1) {
-        $options[$match[1]] = $match[2];
-    }
+try {
+    $options = TokenCliOptions::parse(array_slice($argv, 1), ['corporacao']);
+    $corporationId = isset($options['corporacao']) ? TokenCliOptions::positiveId($options['corporacao']) : null;
+} catch (InvalidArgumentException $e) {
+    fwrite(STDERR, $e->getMessage() . PHP_EOL);
+    exit(1);
 }
 
 try {
     $pdo = App::boot()->pdo();
+    $sql = 'SELECT id_token, id_corporacao, nome, permissoes, ips_permitidos, ativo, criado_em, ultimo_uso, revogado_em FROM token_dispositivo';
+    $params = [];
+    if ($corporationId !== null) {
+        $sql .= ' WHERE id_corporacao = ?';
+        $params[] = $corporationId;
+    }
+    $stmt = $pdo->prepare($sql . ' ORDER BY id_token');
+    $stmt->execute($params);
+
+    $rows = $stmt->fetchAll();
 } catch (Throwable $e) {
-    fwrite(STDERR, 'Não foi possível conectar ao banco: ' . $e->getMessage() . PHP_EOL);
+    fwrite(STDERR, 'Não foi possível listar os tokens. Confira a conexão e as permissões.' . PHP_EOL);
     exit(1);
 }
 
-$sql = 'SELECT id_token, id_corporacao, nome, permissoes, ips_permitidos, ativo, criado_em, ultimo_uso, revogado_em FROM token_dispositivo';
-$params = [];
-if (isset($options['corporacao']) && ctype_digit($options['corporacao'])) {
-    $sql .= ' WHERE id_corporacao = ?';
-    $params[] = (int) $options['corporacao'];
-}
-$stmt = $pdo->prepare($sql . ' ORDER BY id_token');
-$stmt->execute($params);
-
-$rows = $stmt->fetchAll();
 if ($rows === []) {
     echo 'Nenhum token encontrado.' . PHP_EOL;
     exit(0);

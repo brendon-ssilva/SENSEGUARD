@@ -19,32 +19,28 @@ if (PHP_SAPI !== 'cli') {
 require dirname(__DIR__) . '/src/bootstrap.php';
 
 use SenseGuard\Core\App;
+use SenseGuard\Auth\TokenCliOptions;
 
-$options = [];
-foreach (array_slice($argv, 1) as $argument) {
-    if (preg_match('/^--([a-z-]+)=(.*)$/s', $argument, $match) === 1) {
-        $options[$match[1]] = $match[2];
-    }
-}
-
-if (!isset($options['id']) || !ctype_digit($options['id'])) {
-    fwrite(STDERR, 'Uso: php bin/revogar-token.php --id=ID (veja os ids com bin/listar-tokens.php)' . PHP_EOL);
+try {
+    $options = TokenCliOptions::parse(array_slice($argv, 1), ['id']);
+    $id = TokenCliOptions::positiveId($options['id'] ?? null);
+} catch (InvalidArgumentException $e) {
+    fwrite(STDERR, $e->getMessage() . PHP_EOL);
     exit(1);
 }
 
 try {
     $pdo = App::boot()->pdo();
+    $stmt = $pdo->prepare('UPDATE token_dispositivo SET ativo = 0, revogado_em = ? WHERE id_token = ? AND ativo = 1');
+    $stmt->execute([date('Y-m-d H:i:s'), $id]);
 } catch (Throwable $e) {
-    fwrite(STDERR, 'Não foi possível conectar ao banco: ' . $e->getMessage() . PHP_EOL);
+    fwrite(STDERR, 'Não foi possível revogar o token. Confira a conexão e as permissões.' . PHP_EOL);
     exit(1);
 }
-
-$stmt = $pdo->prepare('UPDATE token_dispositivo SET ativo = 0, revogado_em = ? WHERE id_token = ? AND ativo = 1');
-$stmt->execute([date('Y-m-d H:i:s'), (int) $options['id']]);
 
 if ($stmt->rowCount() === 0) {
     fwrite(STDERR, 'Token não encontrado ou já revogado.' . PHP_EOL);
     exit(1);
 }
 
-echo 'Token ' . (int) $options['id'] . ' revogado.' . PHP_EOL;
+echo 'Token ' . $id . ' revogado.' . PHP_EOL;
