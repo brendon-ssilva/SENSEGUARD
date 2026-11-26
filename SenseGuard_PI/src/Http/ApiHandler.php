@@ -8,6 +8,7 @@ use SenseGuard\Controller\ApiContext;
 use SenseGuard\Controller\AuditController;
 use SenseGuard\Controller\CorporationController;
 use SenseGuard\Controller\DeviceIngestController;
+use SenseGuard\Controller\IntegrationSensorController;
 use SenseGuard\Controller\MachineController;
 use SenseGuard\Controller\OrderController;
 use SenseGuard\Controller\ProfileController;
@@ -45,6 +46,11 @@ final class ApiHandler
         // Ingestão de leituras: autenticada por token de dispositivo, sem sessão nem CSRF.
         if ($entity === 'readings' && $method === 'POST') {
             return (new DeviceIngestController($this->app->pdo()))->ingest($request);
+        }
+
+        // Consulta de sensores por integrações: token com a permissão sensors:read (sem sessão).
+        if ($entity === 'integration-sensors' && $method === 'GET') {
+            return (new IntegrationSensorController($this->app->pdo()))->index($request);
         }
 
         $user = $this->app->authenticator()->currentUser();
