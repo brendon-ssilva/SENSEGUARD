@@ -36,6 +36,7 @@ final class ReadingController extends ApiController
             'machineId' => $row['id_maquina'] === null ? null : (string) $row['id_maquina'],
             'value' => (float) $row['valor'],
             'at' => (string) $row['data_hora'],
+            'origin' => (string) $row['origem'],
         ], $rows));
     }
 }

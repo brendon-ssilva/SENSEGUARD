@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace SenseGuard\Controller;
 
+use SenseGuard\Core\Database;
+use SenseGuard\Domain\ManualReadingRule;
+use SenseGuard\Domain\ReadingOrigin;
 use SenseGuard\Domain\SensorStatus;
 use SenseGuard\Domain\SensorStatusRules;
 use SenseGuard\Domain\Specs;
@@ -11,6 +14,7 @@ use SenseGuard\Http\ApiException;
 use SenseGuard\Http\Request;
 use SenseGuard\Http\Response;
 use SenseGuard\Repository\MachineRepository;
+use SenseGuard\Repository\ReadingRepository;
 use SenseGuard\Repository\SensorRepository;
 use SenseGuard\Service\AuditLog;
 use SenseGuard\Validation\Fields;
@@ -41,9 +45,16 @@ final class SensorController extends ResourceController
     public function store(Request $request): Response
     {
         $this->requireWrite();
-        $data = $this->prepare($request->json(), false);
+        $data = $this->prepare($request->json(), null);
 
-        $id = $this->sensors->insert($data);
+        $id = Database::transaction($this->ctx->pdo, function () use ($data): int {
+            $id = $this->sensors->insert($data);
+            if (ManualReadingRule::shouldRecord(null, (float) $data['valor_atual'])) {
+                $this->recordManualReading($id, $data);
+            }
+
+            return $id;
+        });
         $row = $this->sensors->findOrFail($id);
         $this->ctx->audit->record('sensors', $id, 'criar', AuditLog::snapshot($row));
 
@@ -54,9 +65,14 @@ final class SensorController extends ResourceController
     {
         $this->requireWrite();
         $before = $this->sensors->findOrFail($id);
-        $data = $this->prepare($request->json(), true);
+        $data = $this->prepare($request->json(), $before);
 
-        $this->sensors->update($id, $data);
+        Database::transaction($this->ctx->pdo, function () use ($id, $before, $data): void {
+            $this->sensors->update($id, $data);
+            if (ManualReadingRule::shouldRecord((float) $before['valor_atual'], (float) $data['valor_atual'])) {
+                $this->recordManualReading($id, $data);
+            }
+        });
         $after = $this->sensors->findOrFail($id);
 
         $changes = AuditLog::diff($before, $after);
@@ -82,9 +98,10 @@ final class SensorController extends ResourceController
 
     /**
      * @param array<string, mixed> $input
+     * @param array<string, mixed>|null $before Linha atual do sensor (na edição).
      * @return array<string, mixed>
      */
-    private function prepare(array $input, bool $isUpdate): array
+    private function prepare(array $input, ?array $before): array
     {
         Validator::rejectUnknown($input, [...array_keys(Specs::SENSOR), 'machineId']);
         $data = Fields::validate($input, Specs::SENSOR);
@@ -113,12 +130,38 @@ final class SensorController extends ResourceController
         )->value;
         $data['id_maquina'] = $machineId;
 
-        // Ao editar sem informar a data da leitura, mantém a existente.
-        if ($isUpdate && !array_key_exists('lastReadingAt', $input)) {
+        // Uma leitura manual precisa ter a mesma data no sensor e no histórico.
+        $previous = $before === null ? null : (float) $before['valor_atual'];
+        if (ManualReadingRule::shouldRecord($previous, (float) $data['valor_atual'])
+            && empty($data['ultima_leitura'])) {
+            $data['ultima_leitura'] = date('Y-m-d H:i:s');
+        } elseif ($before !== null && !array_key_exists('lastReadingAt', $input)) {
             unset($data['ultima_leitura']);
         }
 
         return $data;
+    }
+
+    /**
+     * Registra no histórico (dados) o valor digitado no painel, com o usuário responsável.
+     *
+     * @param array<string, mixed> $data Colunas já validadas do sensor.
+     */
+    private function recordManualReading(int $sensorId, array $data): void
+    {
+        $readAt = isset($data['ultima_leitura']) && $data['ultima_leitura'] !== ''
+            ? (string) $data['ultima_leitura']
+            : date('Y-m-d H:i:s');
+
+        (new ReadingRepository($this->ctx->pdo, $this->ctx->user->corporationId))->insert(
+            (string) $data['tipo'],
+            (float) $data['valor_atual'],
+            $readAt,
+            $data['id_maquina'] === null ? null : (int) $data['id_maquina'],
+            $sensorId,
+            ReadingOrigin::Manual,
+            $this->ctx->user->id
+        );
     }
 
     /**

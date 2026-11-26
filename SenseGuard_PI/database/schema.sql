@@ -272,6 +272,26 @@ ALTER TABLE ordem_servico ADD CONSTRAINT ck_os_status CHECK (status IN ('aberta'
 ALTER TABLE maquina DROP INDEX uq_maquina_serial;
 ALTER TABLE maquina ADD UNIQUE KEY uq_maquina_corporacao_serial (id_corporacao, num_serial);
 
+-- >>> 009_dados_origem_e_rastreio
+-- Rastreabilidade das leituras (base para importações e para desfazê-las):
+--   origem        dispositivo | importacao | manual
+--   id_importacao identifica a importação de origem (a tabela importacao chega com o Pacote B; sem chave estrangeira por enquanto)
+--   recebido_em   quando o SenseGuard recebeu a leitura (data_hora continua sendo quando foi medida)
+--   anulada_em    leitura cancelada (nunca é apagada; consultas e recálculos a ignoram)
+--   id_usuario    quem digitou uma leitura manual (sem chave estrangeira, para não impedir a exclusão do usuário)
+
+ALTER TABLE dados ADD COLUMN origem VARCHAR(12) NOT NULL DEFAULT 'dispositivo';
+ALTER TABLE dados ADD COLUMN id_importacao INT UNSIGNED NULL;
+ALTER TABLE dados ADD COLUMN recebido_em DATETIME NULL;
+ALTER TABLE dados ADD COLUMN anulada_em DATETIME NULL;
+ALTER TABLE dados ADD COLUMN id_usuario INT UNSIGNED NULL;
+
+UPDATE dados SET recebido_em = data_hora WHERE recebido_em IS NULL;
+
+ALTER TABLE dados MODIFY COLUMN recebido_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE dados ADD KEY idx_dados_importacao (id_importacao);
+ALTER TABLE dados ADD CONSTRAINT ck_dados_origem CHECK (origem IN ('dispositivo', 'importacao', 'manual'));
+
 -- Controle de migrações (usado por bin/migrate.php).
 CREATE TABLE IF NOT EXISTS migracao (
   versao VARCHAR(100) NOT NULL,
@@ -286,4 +306,5 @@ INSERT IGNORE INTO migracao (versao, executada_em) VALUES
   ('004_ordem_servico_responsavel_criador', NOW()),
   ('005_dados_maquina_opcional', NOW()),
   ('006_restricoes_de_dominio', NOW()),
-  ('007_serial_unico_por_corporacao', NOW());
+  ('007_serial_unico_por_corporacao', NOW()),
+  ('009_dados_origem_e_rastreio', NOW());
