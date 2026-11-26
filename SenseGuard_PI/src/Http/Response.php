@@ -24,9 +24,12 @@ final class Response
     }
 
     /** @param array<string, string> $headers */
-    public static function error(int $status, string $message, ?string $field = null, array $headers = []): self
+    public static function error(int $status, string $message, ?string $field = null, array $headers = [], ?string $code = null): self
     {
         $payload = ['success' => false, 'error' => $message];
+        if ($code !== null) {
+            $payload['code'] = $code;
+        }
         if ($field !== null) {
             $payload['field'] = $field;
         }

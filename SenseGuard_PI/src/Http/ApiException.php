@@ -15,6 +15,7 @@ final class ApiException extends RuntimeException
         string $message,
         private ?string $field = null,
         private array $headers = [],
+        private ?string $errorCode = null,
     ) {
         parent::__construct($message);
     }
@@ -27,6 +28,12 @@ final class ApiException extends RuntimeException
     public function field(): ?string
     {
         return $this->field;
+    }
+
+    /** Código estável para clientes de integração (ex.: PERMISSAO_NEGADA). */
+    public function errorCode(): ?string
+    {
+        return $this->errorCode;
     }
 
     /** @return array<string, string> */

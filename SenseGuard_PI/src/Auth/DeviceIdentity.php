@@ -11,6 +11,8 @@ final class DeviceIdentity
         public readonly int $tokenId,
         public readonly int $corporationId,
         public readonly string $name,
+        /** @var list<string> */
+        public readonly array $permissions = [],
     ) {
     }
 }

@@ -55,7 +55,7 @@ final class App
         try {
             $response = $handler(self::boot(), Request::fromGlobals());
         } catch (ApiException $e) {
-            $response = Response::error($e->status(), $e->getMessage(), $e->field(), $e->headers());
+            $response = Response::error($e->status(), $e->getMessage(), $e->field(), $e->headers(), $e->errorCode());
         } catch (ConfigurationException $e) {
             $response = Response::error(500, $e->getMessage());
         } catch (PDOException $e) {

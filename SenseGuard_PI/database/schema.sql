@@ -292,6 +292,17 @@ ALTER TABLE dados MODIFY COLUMN recebido_em DATETIME NOT NULL DEFAULT CURRENT_TI
 ALTER TABLE dados ADD KEY idx_dados_importacao (id_importacao);
 ALTER TABLE dados ADD CONSTRAINT ck_dados_origem CHECK (origem IN ('dispositivo', 'importacao', 'manual'));
 
+-- >>> 010_token_permissoes_e_ips
+-- Tokens com permissões e origem restrita:
+--   permissoes       lista separada por vírgula: readings:write, sensors:read, imports:write, imports:read, imports:cancel
+--                    (os tokens existentes continuam só com readings:write)
+--   ips_permitidos   IPs ou faixas CIDR separados por vírgula; vazio = qualquer origem (camada extra, não substitui o token)
+--   revogado_em      quando o token foi revogado (ativo passa a 0)
+
+ALTER TABLE token_dispositivo ADD COLUMN permissoes VARCHAR(255) NOT NULL DEFAULT 'readings:write';
+ALTER TABLE token_dispositivo ADD COLUMN ips_permitidos VARCHAR(500) NULL;
+ALTER TABLE token_dispositivo ADD COLUMN revogado_em DATETIME NULL;
+
 -- Controle de migrações (usado por bin/migrate.php).
 CREATE TABLE IF NOT EXISTS migracao (
   versao VARCHAR(100) NOT NULL,
@@ -307,4 +318,5 @@ INSERT IGNORE INTO migracao (versao, executada_em) VALUES
   ('005_dados_maquina_opcional', NOW()),
   ('006_restricoes_de_dominio', NOW()),
   ('007_serial_unico_por_corporacao', NOW()),
-  ('009_dados_origem_e_rastreio', NOW());
+  ('009_dados_origem_e_rastreio', NOW()),
+  ('010_token_permissoes_e_ips', NOW());
