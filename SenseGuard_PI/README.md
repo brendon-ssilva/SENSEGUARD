@@ -27,10 +27,10 @@ SenseGuard_PI/
 │   └── Controller/          um controller por recurso
 ├── config/                  config.local.php (não vai para o Git) e o exemplo
 ├── database/
-│   ├── migrations/          001…007 (histórico versionado do banco)
+│   ├── migrations/          001…010 (histórico versionado do banco)
 │   ├── seeds/               dados opcionais (usuário de teste — só desenvolvimento)
 │   └── schema.sql           instalação limpa (gerado a partir das migrações)
-├── bin/                     migrate.php, criar-admin.php, criar-token-dispositivo.php
+├── bin/                     migrate.php, criar-admin.php e gestão de tokens (criar/listar/revogar)
 ├── tests/                   run.php (PHP) e js/ (Node)
 └── docs/                    API.md e MUDANCAS.md
 ```
@@ -73,12 +73,18 @@ Em produção, aponte o *DocumentRoot* para a pasta `public/` e use `'env' => 'p
 Gateways enviam leituras para `POST /public/api.php?entity=readings` com um token de dispositivo; o sistema grava o histórico, atualiza a leitura atual e calcula o status (alerta/online) pelos limites do sensor.
 
 ```bash
-php bin/criar-token-dispositivo.php --nome="Gateway Linha 1"
+php bin/criar-token-dispositivo.php --corporacao=1 --nome="Gateway Linha 1"
 curl -X POST "http://localhost/SENSEGUARD/public/api.php?entity=readings" \
   -H "Content-Type: application/json" -H "X-Device-Token: <token>" \
   -d '{"sensorId": 1, "value": 72.4}'
 ```
 Detalhes (lote, histórico, erros) em [`docs/API.md`](docs/API.md).
+
+### Tokens e permissões
+
+Cada token pertence a uma organização (`--corporacao` obrigatório). Permissões: `readings:write` (padrão) e `sensors:read`; `imports:*` são reservadas, sem endpoints nesta versão. A restrição por IP/CIDR é opcional. Use `php bin/listar-tokens.php --corporacao=ID` e `php bin/revogar-token.php --id=ID_DO_TOKEN` (substitua os IDs). O token é mostrado uma única vez; guarde-o em um cofre de segredos. Não há expiração automática, faça rotação conforme a política do ambiente.
+
+Após backup, aplique as migrations 009 e 010 no banco de homologação da branch. A migration 008 de relatórios continua intacta. Em instalação limpa com `schema.sql`, execute também o migrador para instalar as views. Se já aplicou as migrations 008/009 do ZIP independente v3.1, consulte a nota de reconciliação em [docs/API.md](docs/API.md) antes de executar o migrador.
 
 ## Testes e qualidade
 

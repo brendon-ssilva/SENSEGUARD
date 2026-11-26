@@ -1,4 +1,4 @@
--- OPCIONAL (não é executado pelo migrate.php). Rode UMA vez, depois da migração 008 e com backup.
+-- OPCIONAL (não é executado pelo migrate.php). Rode UMA vez, depois da migração 009 e com backup.
 --
 -- Valores digitados no painel antes da versão 3.1 não deixaram histórico em "dados". Este script cria uma
 -- leitura de origem "manual" para cada sensor cujo valor atual (com data de leitura) não tem leitura
@@ -11,5 +11,5 @@ FROM sensor s
 WHERE s.ultima_leitura IS NOT NULL
   AND NOT EXISTS (
     SELECT 1 FROM dados d
-    WHERE d.id_sensor = s.id_sensor AND d.data_hora = s.ultima_leitura AND d.valor = s.valor_atual
+    WHERE d.id_corporacao = s.id_corporacao AND d.id_sensor = s.id_sensor AND d.data_hora = s.ultima_leitura AND d.valor = s.valor_atual
   );
