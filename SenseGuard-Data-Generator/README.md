@@ -1,4 +1,4 @@
-# SenseGuard Data Generator — etapa 6 (0.6)
+# SenseGuard Data Generator — v0.7.1
 
 Aplicativo independente do PHP. Diagnóstico da etapa 1 preservado; agora gera organizações e usuários fictícios. Não altera schema, migrations ou registros existentes. Não inclui executável Windows nesta etapa.
 
