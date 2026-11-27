@@ -1,0 +1,24 @@
+Options -Indexes
+DirectoryIndex index.php
+
+# Repassa o cabeçalho Authorization ao PHP (Apache ignora por padrão); usado pelo token Bearer dos dispositivos.
+<IfModule mod_setenvif.c>
+  SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+</IfModule>
+
+# Nunca expõe arquivos ocultos.
+<FilesMatch "^\.">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# CSS tem ?v=<data de modificação> na URL, então pode ficar em cache por bastante tempo.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 month"
+</IfModule>

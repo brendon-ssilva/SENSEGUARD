@@ -1,0 +1,28 @@
+/* Utilitários. */
+.text-muted {
+  color: var(--muted);
+}
+.text-fg {
+  color: var(--fg);
+}
+.text-blue {
+  color: var(--blue);
+}
+.text-emerald {
+  color: var(--emerald);
+}
+.text-amber {
+  color: var(--amber);
+}
+.text-crimson {
+  color: var(--crimson);
+}
+.font-mono-style {
+  font-family: "JetBrains Mono", monospace;
+}
+.margin-top-16 {
+  margin-top: 16px;
+}
+.margin-top-24 {
+  margin-top: 24px;
+}

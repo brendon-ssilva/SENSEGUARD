@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * Copie este arquivo para config/config.local.php e ajuste os valores.
+ * O config.local.php NÃO vai para o Git (veja .gitignore).
+ */
+return [
+    'db' => [
+        'host' => '127.0.0.1',
+        'port' => 3306,
+        'name' => 'senseguard',
+        'user' => 'root',   // XAMPP: root
+        'pass' => '',       // XAMPP: senha vazia por padrão
+    ],
+
+    'app' => [
+        // 'development' mostra o acesso rápido de demonstração no login e permite contas @senseguard.local.
+        // Em produção use 'production'.
+        'env' => 'development',
+        'timezone' => 'America/Sao_Paulo',
+        'session_ttl' => 7200,            // segundos de inatividade
+        'secure_cookies' => null,         // null = detecta HTTPS sozinho
+        'sensor_offline_after_minutes' => 0, // 0 = desativado; ex.: 15 marca sensores sem leitura como offline
+    ],
+
+    'security' => [
+        'login_window_seconds' => 900,
+        'login_max_per_email' => 5,
+        'login_max_per_ip' => 20,
+    ],
+];

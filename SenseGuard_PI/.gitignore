@@ -1,0 +1,17 @@
+# Configuração local (credenciais do banco): nunca versionar.
+config/config.local.php
+
+# Dependências e artefatos de ferramentas
+/vendor/
+/node_modules/
+composer.lock
+package-lock.json
+.phpunit.result.cache
+.php-cs-fixer.cache
+
+# Logs e arquivos de editor/sistema
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
