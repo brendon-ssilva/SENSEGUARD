@@ -141,3 +141,8 @@ e ferramentas de desenvolvimento.
 O uso da ferramenta não substitui a responsabilidade
 dos integrantes de revisar, compreender e apresentar
 o código desenvolvido.
+
+
+## Consulta dinâmica de medições
+
+No menu **Histórico de leituras**, filtre por sensor/máquina, tipo, origem, período e ordenação, sem recarregar o painel. A consulta usa POST JSON com sessão e CSRF e retorna até 50 medições por página. Consulte [FILTROS_DINAMICOS.md](docs/FILTROS_DINAMICOS.md) para arquitetura, instalação com o gerador, segurança, privacidade e validações executadas/pendentes.

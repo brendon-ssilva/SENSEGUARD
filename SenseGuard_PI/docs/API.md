@@ -125,3 +125,26 @@ Os exemplos HTTP são exclusivos do localhost; fora dele use HTTPS. Evite compar
 ### Migração da branch de reestruturação
 
 Preserve `008_views_relatorios.sql`. A rastreabilidade chega em `009_dados_origem_e_rastreio.sql` e as permissões de tokens em `010_token_permissoes_e_ips.sql`. Tokens antigos continuam com `readings:write`, sem IP restrito. Faça backup e teste em banco descartável antes de atualizar um banco existente. O `schema.sql` continua destinado a instalação limpa: a migration 008 das views permanece separada e deve ser aplicada pelo migrador. Se já tiver usado o ZIP v3.1 independente (migrations 008/009 com outros nomes), não rode estas migrations automaticamente: compare colunas e registros de `migracao` e planeje a reconciliação manual. A migration DDL não possui rollback transacional no MySQL. A coluna `id_importacao` é reservada; não existe tabela nem endpoint de importação nesta entrega.
+
+
+## Consulta dinâmica de medições (painel)
+
+`POST api.php?entity=readings-query` — somente leitura, exige sessão e `X-CSRF-Token`, disponível aos três perfis autenticados na própria organização. Não utiliza token de dispositivo. `Content-Type: application/json`. Corpo até 4096 bytes. Todos os campos são opcionais; `{}` também é válido.
+
+```json
+{"q":"Bomba","type":"temperatura","origin":"importacao","from":"2026-11-01","to":"2026-11-27","sort":"recent","page":1}
+```
+
+- q: texto até 100 caracteres, pesquisa literal por nome do sensor ou da máquina.
+- type: enum SensorType; origin: enum ReadingOrigin (dispositivo, importacao, manual). Vazio/omitido: todos.
+- from/to: YYYY-MM-DD, inclusive; from deve ser menor ou igual a to. Datas ausentes não restringem.
+- sort: recent (padrão) ou oldest; page: inteiro de 1 a 2000 (padrão 1).
+- Campos desconhecidos são rejeitados (400). Validação de valor retorna 422. Corpo grande retorna 413, tipo incorreto 415. Sem sessão: 401; sem CSRF: 403.
+
+Resposta 200 (exemplo fictício):
+
+```json
+{"rows":[{"id":"123","type":"temperatura","value":"72.40000","at":"2026-11-27 14:30:00","origin":"importacao","sensor":"SG Teste TMP","machine":"SG Teste Bomba"}],"page":1,"hasNext":false,"limitReached":false}
+```
+
+rows tem até 50 itens; sensor/machine podem ser null. value é string decimal. A consulta ignora medições anuladas e usa a organização da sessão. hasNext indica disponibilidade de outra página dentro do teto; limitReached indica que é preciso refinar os filtros. O GET de histórico por sensor e o POST de ingestão em readings não foram alterados.
