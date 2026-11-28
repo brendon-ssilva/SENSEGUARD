@@ -82,3 +82,13 @@
 .sensor-checkbox-name { font-weight: 500; }
 .form-input-field.is-invalid { border-color: var(--crimson); }
 .form-hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* Consulta de medições: reutiliza os tokens e componentes dos temas existentes. */
+.reading-filter-form { margin-bottom: 20px; }
+.reading-filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 14px; }
+.reading-filter-actions, .reading-pagination { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 16px; }
+.reading-pagination { justify-content: flex-end; padding: 12px 16px; border-top: 1px solid var(--border); margin: 0; }
+.reading-feedback { padding: 12px 20px; min-height: 38px; color: var(--muted); }
+.reading-feedback.text-crimson { color: var(--crimson); }
+.readings-view :is(button, input, select, [tabindex]):focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.readings-view button:disabled { opacity: .5; cursor: not-allowed; }
