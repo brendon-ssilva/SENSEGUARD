@@ -102,7 +102,7 @@ final class Request
      *
      * @return array<string, mixed>
      */
-    public function json(int $maxBytes = 1_048_576): array
+    public function json(int $maxBytes = 1_048_576, bool $allowEmptyObject = false): array
     {
         $contentType = strtolower(trim(explode(';', (string) ($this->server['CONTENT_TYPE'] ?? ''))[0]));
         if ($contentType !== 'application/json') {
@@ -127,7 +127,7 @@ final class Request
             throw new ApiException(400, 'JSON inválido.');
         }
 
-        if (!is_array($data) || array_is_list($data)) {
+        if (!is_array($data) || (array_is_list($data) && !($allowEmptyObject && $data === [] && str_starts_with(ltrim($raw), '{')))) {
             throw new ApiException(400, 'Formato de dados inválido.');
         }
 

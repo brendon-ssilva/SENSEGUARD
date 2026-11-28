@@ -14,6 +14,7 @@ final class EnumCatalog
             'machineStatus' => MachineStatus::options(),
             'sensorStatus' => SensorStatus::options(),
             'sensorType' => SensorType::options(),
+            'readingOrigin' => ReadingOrigin::options(),
             'orderType' => OrderType::options(),
             'orderPriority' => OrderPriority::options(),
             'orderStatus' => OrderStatus::options(),

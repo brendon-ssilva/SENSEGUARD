@@ -93,6 +93,8 @@ final class ApiHandler
         $router->add('audit', 'GET', static fn (Request $r): Response => $make(AuditController::class)->index($r));
         $router->add('readings', 'GET', static fn (Request $r): Response => $make(ReadingController::class)->history($r));
 
+        $router->add('readings-query', 'POST', static fn (Request $r): Response => $make(ReadingController::class)->search($r));
+
         // Carga inicial do painel: todas as listas e o catálogo de valores em uma só chamada.
         $router->add('all', 'GET', static fn (Request $r): Response => Response::json([
             'users' => $make(UserController::class)->listAll(),

@@ -33,6 +33,29 @@ final class ReadingRepository
         $stmt->execute([$type, $value, $readAt, $machineId, $sensorId, $this->corporationId, $origin->value, $userId, $importId]);
     }
 
+    /**
+     * @param array<string, mixed> $filters
+     * @return array{rows: list<array<string, mixed>>, page: int, hasNext: bool, limitReached: bool}
+     */
+    public function search(array $filters): array
+    {
+        $query = ReadingQuery::build($filters, $this->corporationId);
+        $stmt = $this->pdo->prepare($query['sql']);
+        foreach ($query['params'] as $index => $value) {
+            $stmt->bindValue($index + 1, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+        }
+        $stmt->execute();
+        $rows = $stmt->fetchAll();
+        $more = count($rows) > ReadingQuery::PAGE_SIZE;
+
+        return [
+            'rows' => array_slice($rows, 0, ReadingQuery::PAGE_SIZE),
+            'page' => $query['page'],
+            'hasNext' => $more && $query['page'] < ReadingQuery::MAX_PAGE,
+            'limitReached' => $more && $query['page'] === ReadingQuery::MAX_PAGE,
+        ];
+    }
+
     /** @return list<array<string, mixed>> Mais recentes primeiro; leituras anuladas não aparecem. */
     public function history(int $sensorId, int $limit, int $offset = 0): array
     {

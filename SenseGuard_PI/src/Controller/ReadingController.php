@@ -13,6 +13,24 @@ use SenseGuard\Repository\SensorRepository;
 /** Histórico de leituras de um sensor (usuário autenticado por sessão). */
 final class ReadingController extends ApiController
 {
+    /** Consulta por sessão, sem interferir no POST de ingestão por token. */
+    public function search(Request $request): Response
+    {
+        $filters = $request->json(4096, true);
+        $result = (new ReadingRepository($this->ctx->pdo, $this->ctx->user->corporationId))->search($filters);
+        $result['rows'] = array_map(static fn (array $row): array => [
+            'id' => (string) $row['id_medida'],
+            'type' => (string) $row['tipo_medida'],
+            'value' => (string) $row['valor'],
+            'at' => (string) $row['data_hora'],
+            'origin' => (string) $row['origem'],
+            'sensor' => $row['sensor'],
+            'machine' => $row['maquina'],
+        ], $result['rows']);
+
+        return Response::json($result);
+    }
+
     public function history(Request $request): Response
     {
         $sensorId = $request->queryInt('sensorId', 1, PHP_INT_MAX);
